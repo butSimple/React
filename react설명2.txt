@@ -1,0 +1,117 @@
+﻿DOM을 편하게 제어하기 위해 여러 Javascript 라이브러리와 프레임워크가 나왔다.
+제일 먼저 떠올릴만한 것은 Jquery 이다. Jquery는 dom을 자르듯이 데이터를 조회하는 방식을 많이 느끼며 dom에 구애받지 않는 것 처럼 작동해
+많은 사랑을 받았다.
+
+그 후에는 backbone, angular 등이 나오면서 Javascript 프레임워크,라이브러리등이 활성화되기 시작했다.
+현재 Angular,React,Vue 3개의 javascript 라이브러리(프레임워크) 주를 이루고 있다.
+
+우리가 그 중 알아볼 것은 React이다. React 는 facebook에서 개발한 오픈소스 라이브러리로 
+공인(?)된 업체에서 개발 관리하며 여러 대규모 사이트에서 사용중이다.
+프레임워크가 아니라 웹을 만드는 다양한 모듈들을 지원하진 않지만 가볍고 이식성이 좋다.
+또한 웹프론트를 SPA(Single Page Application) 참고사이트(https://poiemaweb.com/js-spa)로 구현하기 용이하다.
+
+React의 특징
+
+1. Just The UI
+   - 흔히 말하는 MVC 모델중 V에만 집중한 UI 라이브러리이다.
+
+2. Component 
+   - UI 를 구성하는 독립적인 뷰단위
+   - 마크업언어, JS 등으로 구성된 component를 조립해 쌓는 방식
+   - 재사용 용이(마크업 언어 등의 반복적인 코드를 줄임)
+   - parent - child component 구조(상속)를 이용해 각 컴포넌트간의 데이터 공유 용이
+
+3. Virtual DOM
+  - 경랑의 javascript object 
+  - 기존 트리탐색 알고리즘 보다 시간복잡도가 줄은 Diff 알고리즘 사용(O(n^3) --> O(n))
+  - 변경된 state 를 먼저 Virtual DOM 에 반영하고 변경된 부분만 DOM에 반영
+  - Diff 알고리즘 참고 사이트 https://nillk.tistory.com/27 , http://guswnsxodlf.github.io/react-diff-algorithm
+
+4. React 자체로는 러닝커브가 높지 않음
+  - Javascript 기반
+  - 단 재대로 사용하러면 JSX, babel, flux, webpack 등 학습 필요
+
+5. 단반향 데이터 흐름(Flow 패턴)
+  - 데이터가 변하면 UI가 업데이트
+  - UI가 데이터를 변화시킬 수 없다.
+  - 대표적인 양방향 통신 패턴 MVC
+
+6. 이식성
+   - backbone,angular 프레임 워크등 여러 환경과 조합하기 용이  
+
+이중에 우리가 눈여겨 봐야할 것은  Virtual DOM, Component, Flow pattern 이다.
+
+첫 번쨰로는 Virtual DOM이다.
+일반적으로 웹은 DOM형식으로 되어있다. 만약 사이트가 엄청나게 동적으로 작동한다면
+브라우저는 데이터가 바뀔때마다 DOM 전체를 다시그리고 화면을 Render해야한다. 
+이 과정에서 DOM이 무거우면 사용자는 해당 사이트를 느린 곳으로 인식하게 될 것이다.
+
+그렇게 때문에 React는 경랑화된 javascript object 즉 Virtual DOM을 지원한다.
+React에서는 데이터가 변화하면 변화한 데이터를 가지고 Virtual DOM을 먼저 만든뒤
+변경된 부분만을 찾아 실제 DOM에 반영한다. 변경된 부분을 찾을때에도 기본적인 트리탐색 알고리즘을
+사용하는 것이 아니라 자체적으로 만든 DIFF 알고리즘을 사용해 시간복잡도도 확연히 줄였다.
+ 
+따라서 DOM 전체를 Render 하는 비용을 줄여 사용자측에 기존 방식보다 빠른 성능을 제공한다.
+
+두 번째로는 Component이다.
+Component는 마크업언어와 JavaScript 등으로 구성된 독립적인 뷰단위 이다. 
+예를 들자면 '<h1>Hello, world</h1>' 이것이 하나의 component라고 할 수 있다. 
+이런 component를 쌓아 하나의 웹페이지를 만들 수 있다. 
+물론 Hello, world 라는 단어 대신에 '<h1>{this.props.name}</h1>' 이런식으로 데이터를 받아서 생성하는 것도 가능하다.
+여러 개의 컴포넌트를 조합해서 하나의 컴포넌트도 만들 수 있으며 컴포넌트간의 상속관계로 데이터를 공유하는 것도 가능하다.
+이러한 특징들이 Component의 재사용을 용이하게 만들어 반복적인 코드를 줄여 유지보수의 편의성을 증가 시킬 수 있다.
+
+세 번째로는 Flow 패턴이다.
+우리는 주로 MVC 패턴 기반의 웹사이트를 만들고 있다. MVC 패턴은 Model 과 View 간의 데이터가 양방향 통신이다.
+MVC 패턴은 규모가 큰 사이트 일수록 로직이 복잡해져 결국엔 데이터의 흐름이 꼬일 수 있다.
+
+페이스북의 인용글에서 그예를 찾을 수 있다.
+ 
+'페이스북과 같은 대규모 애플리케이션에서는 MVC가 너무 빠르게, 너무 복잡해진다는 것이다
+. 페이스북 개발팀에 따르면 구조가 너무 복잡해진 탓에 새 기능을 추가할 때마다 크고 작은 문제가 생겼으며 코드의 예측이나 테스트가
+ 어려워졌으며 새로운 개발자가 오면 적응하는데만 한참이 걸려서 빠르게 개발할 수가 없었다. 소프트웨어의 품질을 담보하기가 힘들어졌다는 뜻이다.
+ 이 같은 문제의 대표적인 사례가 바로 페이스북의 안 읽은 글 갯수(unread count) 표시이다. 
+사용자가 읽지 않았던 글을 읽으면 읽지 않은 글 갯수에서 읽은 글 수만큼 빼면 되는 일견 단순해보이는 기능인데도, 
+페이스북 서비스에서 이를 MVC로 구현하기는 어려웠다고 한다. 어떤 글을 ‘읽음’ 상태로 두면, 먼저 
+글을 다루는 thread 모델을 업데이트 해야하고 동시에 unread ​count 모델도 업데이트 해야한다.
+ 대규모 MVC 애플리케이션에서 이 같은 의존성과 순차적 업데이트는 종종 데이터의 흐름을 꼬이게 하여 예기치 못한 결과를 불러일으킨다. 
+(출처: Flux와 Redux, Webframeworks.kr )
+'
+페이스북은 이러한 사례들로 Flow 패턴을 만들었다.
+Flow 패턴은 데이터가 단방향으로 흘러 데이터의 흐름을 파악하기 쉽게 구성된 패턴이다.
+Flow 패턴은 데이터가 변하면 View를  바꾸지만 View자체가 데이터를 변화할 수 없다. 
+
+아래의 사진은 MVC 패턴과 FLOW 패턴의 흐름도 이다.
+사진. mvc react data flow.PNG
+
+React를 어떨 때 써야하는가?
+웹페이지는 React를 사용하지않고 html, css, js로 충분히 제작이 가능하다. 그래서 Static한 웹사이트를 제작한다면 React는 큰 이득이 되지 못할 것이다.
+하지만 Static한 사이트에서도 사용한다면 component를 재사용해 마크업언어의 반복적인 코딩을 줄일 수 있다.
+또  Virtual DOM을 이용해 변경된 부분만 DOM에 반영하는 것도 큰 메리트이다.
+
+자신이 만들 사이트가 구조가 복잡하고 동적이다면 React 적용을 생각해 볼만하다.
+위의 여러 특징들로 개발자 입장에서도 코드 리팩토링이 쉬어지고 데이터 흐름을 파악하기 쉬어진다.
+사용자 입장에서도 빠른 웹사이트를 제공받을 수 있다.
+
+----
+JSX 
+
+1. 두개 이상의 엘리먼트는 무조건 하나의 엘리먼트로 감싸져 있어야한다.
+2. class 대신 className 을사용
+3. 스타일 속성은 중괄호 {} 안에 객체 형태로 표시하며 단어 사이의 '-'(font-size)를 없애고 카멜케이스
+네이밍규칙을 따른다.
+4.모든 태그는 반드시 닫혀 있어야 한다.
+5. JSX 안에서 javascript값을 사용할떈 중괄호({})를 사용한다.
+6. 주석은 /**/
+----
+
+번외
+es6 ,babel, webpack,Flux, redux
+
+http://www.bloter.net/archives/233564
+
+https://blog.coderifleman.com/2015/06/23/learning-react-1/
+
+https://chaewonkong.github.io/react/2018/12/24/react/
+
+http://webframeworks.kr/getstarted/reactjs/

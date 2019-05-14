@@ -1,0 +1,48 @@
+0. jquery -> backbone ->angular -> React
+페이스북에서 개발
+1. React는 angular,vue 와 같은 프레임워크가 아닌 오픈소스 라이브러리
+1-1. 웹을 만드는 많은 도구가 들어있지는 않지만 가볍다
+2. SPA(Single Page Application) 의 이점
+
+3. React의 특징
+3-1  JUST THE UI
+  MVC 중 V 에만 집중한 UI 라이브러리
+  백본,앵귤러등 여러 환경과 조합 용이
+
+커스텀태그 지원
+
+자바스크립트는 컴파일 된 자바, 오브젝티브C에 비해 느린 언어다.
+
+3-1. component : UI를 구성하는 독립적인 뷰단위
+React 는 여러 compoent를 조립해 쌓는 방식
+각 component는 반복적인 코드를 줄이는 재사용 이점
+
+3-2 vitual dom(메모리상에 올린 dom)
+dom은 랜더링 등 브라우저에서 함으로 성능 이슈
+react는 render 한것이 바로 dom에 반영되지 않고
+vitual dom에 먼저 반영하여 dom과 vdom을 비교해 dom에 바뀐부분만 렌더
+
+4. parent -child component 구조
+-각 컴포넌트간의 데이터 공유 용이
+
+react 자체로는 러닝커브가 높지않음
+-javascript 기반 
+- 재대로 사용하려면 JSX 바벨 등 여러개를 합쳐 사용
+
+mvc 와 다른 단방향 데이터흐름
+Data -> UI 로 흐르는 구조로, 데이터가 변하면 UI가 업데이트되며 UI가 데이터를 변화시킬 수 없다. 
+
+mvc는 양방향 통신이라 대규모 어플리케이션에서 유지보수의 어려움을 느끼지만
+flow는 조금더 쉬움
+---
+Jquery는 dom을 잘라 조작하는느낌
+---
+
+번외
+es6 ,babel, webpack,Flux, redux
+
+http://www.bloter.net/archives/233564
+
+https://blog.coderifleman.com/2015/06/23/learning-react-1/
+
+http://webframeworks.kr/getstarted/reactjs/

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="UTF-8">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+
+	<!--버전0.13.x 의 경우 React.render을 이용해야함
+	버전이 0.14.x 로 바뀌면서 react-dom 추가 되며 ReactDOM.render로 사용
+	https://reactjs.org/blog/2015/10/07/react-v0.14.html-->
+	<script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+ </head>
+ <body>
+  <h3>0.React의 Hello World</h3>
+  <div id="ex1"></div>
+  <div id="ex2"></div>
+
+
+
+
+   <h2>2.react에서 JSX 사용하기</h2><br/>
+   <h3>2 - 1. JSX 란?</h2><br/>
+    2 - 1 - 1. JavaScript Xml vs JavaScript eXtension<br/><br/>
+	JSX를 검색하면 자바스크립트의 확장형이냐 XML형식을 포함한 자바스크립트이냐 라는 의문이 든다.<br/>
+	react가 JSX를 사용하면서 extension을 xml로 바꿧다는 이야기부터 별의 별 이야기들이 많지만<br/><br/>
+	내 생각에는 JSX는 XML,HTML의 마크업언어를  JavaScript 코드와 공존 할 수 있도록 ECMLScript를
+	확장하는 방식이라고 생각한다.<br/><br/>
+	결론으로는 두개의 방식 모두를 수용하고 있다.
+   <h3>2 - 2. React에서 JSX를 사용하는 이유</h3><br/>
+    2 - 2 -1. react에서는 마크업언어와 로직을 함께 component라고 부름
+    2 - 2 -2. react에서 JSX은 필수가 아니지만 마크업언어와 로직을 시각적으로<br/>
+    함께 볼 수 있어 작업에 도움을 줄 수 있다.
+    2 - 2 - 3. react에서 JSX를 사용하면 에러 및 경고메시지가 더욱 가치있게 변한다.
+	<script type="text/jsx">
+    ReactDOM.render(
+      <h1>Hello, world!</h1>,
+      document.getElementById('ex1')
+    );
+    </script>
+ </body>
+</html>

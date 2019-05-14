@@ -1,0 +1,68 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/jsx">
+    // 개념적으로 컴포넌트는 JavaScript와 유사
+    //props 라고 하는 임의의 값을 입력받은 후 화면에 어떻게 표시되는지를
+    //기술하는 React element 를 반환
+
+    //1. 함수 컴포넌트
+    function Welcome(props){
+       return <h1>Hello, {props.name}</h1>;// React element
+
+    }
+    //2. Class component (ES6 class)
+
+    // React 에서는 위 두가지 유형의 컴포넌트는 동일
+    //class에는 몇가지 기능이 더있다.
+    class Welcome2 extends React.Component{
+      render(){
+          return <h1>Hello, {this.props.name}</h1>;
+      }
+    }
+    //컴포넌트 렌더링
+
+    const element = <Welcome name="Sara"/>;//React엘레먼트는 사용자 정의 컴포넌트로도 가능
+    //When React sees an element representing a user-defined component
+    //, it passes JSX attributes to this component as a single object.
+    //We call this object “props”.
+    //React 가 사용자 정의 컴포넌트로 작성된 엘리먼트를 보면 JSX attributes를
+    //컴포넌트의 single object 전달한다
+    // 이 single object를 우리는 'Props'라고 부른다.
+
+    ReactDOM.render(
+      <App/>,
+      document.getElementById('root')
+    );
+    // 작동 순서
+    // 1. <Welcome name="Sara" /> 엘리먼트로 ReactDOM.render()를 호출
+    // 2. React는 {name: 'Sara'}를 props로 하여 Welcome 컴포넌트를 호출
+    // 3. Welcome 컴포넌트는 결과적으로 <h1>Hello, Sara</h1> 엘리먼트를 반환
+    // 4. React DOM은 <h1>Hello, Sara</h1> 엘리먼트와 일치하도록 DOM을 효율적으로 업데이트
+
+    // 컴포넌트의 이름은 항상 대문자로 시작합니다.
+    //React는 소문자로 시작하는 컴포넌트를 DOM 태그로 처리
+    //<div />는 HTML div 태그를 나타내지만,
+    // <Welcome />은 컴포넌트를 나타내며 범위 안에 Welcome이 있어야 한다.
+
+
+    //컴포넌트 합성
+    function App() {
+      return(
+        <div>
+          <Welcome name="Sara" />
+          <Welcome name="Cahal" />
+          <Welcome name="Edite" />
+        </div>
+      );
+    }
+    </script>
+</body>
+</html>

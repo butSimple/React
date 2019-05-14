@@ -1,0 +1,93 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="ex1"></div>
+  <div id="ex2"></div>
+  <script type="text/jsx">
+    //조건부 렌더링
+    function UserGreeting() {
+      return <h1>Welcome back!</h1>;
+    }
+
+    function GuestGreeting() {
+      return <h1>Please sign up.</h1>;
+    }
+
+    function Greeting(props) {
+      const isLoggedIn = props.isLoggedIn;
+      if (isLoggedIn) {
+        return <UserGreeting />;
+      }
+      return <GuestGreeting />;
+    }
+    ReactDOM.render(
+      <Greeting isLoggedIn={false} />,
+      document.getElementById('ex1')
+    );
+    //Element Variables
+    function LoginButton(props) {
+      return (
+        <button onClick={props.onClick}>
+          Login
+        </button>
+      );
+    }
+
+    function LogoutButton(props) {
+      return (
+        <button onClick={props.onClick}>
+          Logout
+        </button>
+      );
+    }
+    class LoginControl extends React.Component{
+      constructor(props){
+        super(props);
+        this.loginClick = this.handleLoginClick.bind(this);
+        this.logoutClick = this.handleLogoutClick.bind(this);
+
+        this.state = {isLoggedIn : false};
+      }
+        handleLoginClick() {
+         this.setState({isLoggedIn: true});
+       }
+
+       handleLogoutClick() {
+         this.setState({isLoggedIn: false});
+       }
+
+       render(){
+         const isLoggedIn = this.state.isLoggedIn;
+          let button;
+          //https://gist.github.com/LeoHeo/7c2a2a6dbcf80becaaa1e61e90091e5d
+         // let은 재할당 가능
+         //const는 재할당 불가, 또 선언가 동시에 할당하여야함
+
+         if (isLoggedIn) {
+           button = <LogoutButton onClick={this.logoutClick} />;
+         } else {
+           button = <LoginButton onClick={this.loginClick} />;
+         }
+
+         return (
+          <div>
+            <Greeting isLoggedIn={isLoggedIn} />
+            {button}
+          </div>
+        );
+       }
+      }
+
+    ReactDOM.render(
+      <LoginControl />,
+      document.getElementById('ex2')
+    );
+    </script>
+</body>
+</html>

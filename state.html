@@ -1,0 +1,313 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="ex1"></div>
+    <div id="ex2"></div>
+    <div id="ex3"></div>
+  <script type="text/jsx">
+      /*
+        function Clock(props) {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {props.date}.</h2>
+          </div>
+        );
+      }
+
+      function tick() {
+        ReactDOM.render(
+          <Clock date={new Date().toLocaleTimeString()} />,
+          document.getElementById('ex1')
+        );
+      }
+
+      setInterval(tick, 1000);
+      */
+
+      //State는 props와 유사하지만, 비공개이며 컴포넌트에 의해 완전히 제어됩니다.
+
+      //함수에서 클래스로 변환 하기
+      //다섯 단계로 Clock과 같은 함수 컴포넌트를 클래스로 변환할 수 있다..
+      //1.React.Component 를 확장하는 동일한 이름의 ES6 class 생성
+      //render() 라고 불리는 빈메서드 추가(오버라이드?)
+      //함수의 내용을 render() 메소드 안으로 옮김
+      //render() 내용 안에 있는 props 를 this.props로 변경
+
+
+      /*
+        function Clock(props) {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {props.date.toLocaleTimeString()}.</h2>
+          </div>
+        );
+      }
+      */
+      class PropClock extends React.Component{
+        render(){
+          return (
+            <div>
+              <hi>Hello, world!</hi>
+              <h2>It is {this.props.date.toLocaleTimeString()}.</h2>
+            </div>
+          );
+        }
+      }
+      // render 메소드는 업데이트가 발생할 떄마다 호출됨
+      //같은 DOM 노드로 렌더링되는경우 단일 인스턴트만 사용
+      //로컬 state와 생명주기 메서드 같은 부가적인 기능도 사용 가능
+
+      // props --> state 로 변경
+
+      //1. this.props.date --> this.state.date
+
+      class StateClock extends React.Component {
+        render() {
+          return (
+            <div>
+              <h1>Hello, world!</h1>
+              <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+          );
+        }
+      }
+      //2. 초기 state를 지정하는 class constructor 추가
+      class ConstructorClock extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {date: new Date()};
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>Hello, world!</h1>
+              <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <ConstructorClock/>,
+        document.getElementById('ex1')
+      );
+      //Clock이 처음 DOM에 렌더릴 될때마다 타이머를 설정 하려고함
+      // 이것은 React에서 마운팅이라고 불름
+      //또 한 clock에 의해 생성된 DOM이 삭제될 떄마다 타이머 해제(언마운팅)
+      //2. 초기 state를 지정하는 class constructor 추가
+      class MountingClock extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {date: new Date()};
+        }
+        //생명주기 메서드(lifecycle methods)
+        //컴포넌트가 DOM에 렌더링 된 후에 실행됨
+        componentDidMount(){
+          this.timerInterval = setInterval(//pros,state 빼고는 변수이름 자유로움
+          () => this.tick(),1000
+          );
+        }
+        //생명주기 메서드(lifecycle methods)
+        componentWillUnmount(){
+          clearInterval(this.timerInterval);
+        }
+
+        tick(){
+          this.setState({
+            date: new Date()
+          });
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>Hello, world!</h1>
+              <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <MountingClock/>,
+        document.getElementById('ex2')
+      );
+      // MountingClock 의 실행 순서
+
+      //1. <MountingClock/>, 이 ReactDOM.render() 로 전달되었을 떄
+      //react는 MountingClock 컴포넌트의 생성자를 호춣 및 생성자의 state 초기화
+
+      //2. react는 MountingClock 컴포넌트의 render() 메서드 호출
+      //이를 통해 React는 화면에 표시되야할 엘리먼트를 알게 됨
+      //그다음 React는  MountingClock의 렌더링 값을 일치시키기 위해 DOM 업데이트
+
+      //3. CLOCK의 엘리멘트 값이 DOM에 삽입(렌더링)되면 React는
+      //componentDidMount()( lifecycle 메서드) 호춣
+      //그안에서 componentDidMount 컴포넌트는 매초 컴포넌트의 tick() 메서드
+      //를 호출하기위해 브라우저에게 타이머 설정하도록 요청
+
+      //매초 브라우저가 tick() 호출
+      //그 안에서 componentDidMount 컴포넌트는 setState() 에 현재 시각을
+      //포함하는 객체를 호출하면서 UI 업데이트
+      //setState() 호출 떄문에 React는 state가 변경된 것을 인지하고
+      //화면에 표시된 내용일 알아내기 위해 render() 메서드를 다시 호출
+
+      //5. componentDidMount 컴포넌트가 DOM으로부터 한 번이라도 삭제된 적이
+      //있다면 React는 타이머를 멈추기위해
+      //componentWillUnmount() 생명주기 메서드를 호출
+
+
+      //State 올바르게 사용하기
+
+      //1. 직업 State 수정하지 않기
+      //this.state.comment = 'Hello';
+      //다음 코드는 컴포넌트를 다시 렌더링 하지 않는다.
+      //위의 코드대신 setState() 사용
+      //this.setState({comment: 'Hello'});
+      //this.state 처럼 바로 지정하는 것을 할 수 있는 유일한 공간은 생성자 이다.
+
+      //2. state 업데이트는 비동기 적일 수 있다
+      //react는 성능을 위해 여러 setState() 호출을 단일 업데이트로 한꺼번에
+      //처리할 수 도 있다.
+
+      //또한 this.props와 this.state가 비동기적으로 업데이트 될 수도 있기 떄문에
+      //다음 state 계산할 떄 해당 값에 의존해서는 안됨
+
+      //예를 들어 아래 코드는 카운터 업데이트를 실패할 수 있음.
+      /*
+      this.setState({
+        counter: this.state.counter + this.props.increment,
+      });
+      */
+      //prop이 먼저 업데이트 되고 setState 나중에 호출되면 원하는 결과 값 얻을 수 없음
+
+      //이를 수정하기위해 객체보다는 함수의 인자값으로 업데이트
+      //이 함수는 이전 state의 값을 첫인자로
+      // 업데이트가 적용된 시점의 prop을 두번쨰 인자로 받음
+      /*
+        this.setState((state, props) => ({
+          counter: state.counter + props.increment
+        }));
+      */
+      /*
+      참고로 위의 => 은 ES6 함수 표현식
+      this.setState(function(state, props) {
+        return {
+          counter: state.counter + props.increment
+        };
+      });
+      위와 같은 함수
+      */
+
+      //3. state 업데이트는 병합(merge)
+      //setState()를 호출 할 떄 React는 제공한 객체를 현재 state로 병합됨(Merged)
+
+      //예를들어 state는 여러 독립적인 변수를 포함 할 수 있다.
+      /*
+      constructor(props) {
+       super(props);
+       this.state = {
+         posts: [],
+         comments: []
+       };
+      }
+      */
+      //setState() 호출로 이러한 변수를 독립적으로 업데이트 할 수 있다.
+      /*
+      componentDidMount() {
+        fetchPosts().then(response => {
+          this.setState({
+            posts: response.posts
+          });
+        });
+
+        fetchComments().then(response => {
+          this.setState({
+            comments: response.comments
+          });
+        });
+      }
+      병합은 얕게(shallow) 이루어 지기 때문 this.setState({comments})는 this.state.posts에 영향을 주진 않지만
+      this.state.comments는 완전히 대체됩니다.
+      */
+
+
+      //데이터는 아래로 흐른다
+
+      //부모 컴포넌트나 자식 컴포넌트 모두 특정 컴포넌트가
+      //stateful or stateless 한지 알 수 없고
+      //그들이 함수 or 클래스로 정의되어있는지 관심을 가질 필요 없다.
+
+      //이 떄문에 state는 종종 로컬 or 캡슐화라고 불림
+      //state를 소유하고 설정한 컴포넌트 이외에 어떤 컴포넌트도 접근 불가
+
+      //컴포넌트는 자신의 state를 자식 컴퍼논트에 props으로 전달 가능
+      //사용자 정의된 컴포넌트에도 적용가능
+      class ParentClock extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {date: new Date()};
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>Hello, world!</h1>
+              <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+              <FormattedDate date={this.state.date} />
+            </div>
+          );
+        }
+      }
+      function FormattedDate(props) {
+        return <h2>It is {props.date.toLocaleTimeString()}.</h2>;
+      }
+      //FormattedDate 컴포넌트는 date를 자신의 props로 받을 것이고
+      //이것이 ParentClock state로 왔는지 ParentClock props에서 왔는지
+      //수동으로 받은값인지 알지 못함
+
+      //일반적으로 이를 하향식(top-down) 또는 단방햑식 데이터 흐름이라 부름
+      //모든 state는 항상 특정한 컴포넌트가 소유하고 있고
+      //그 state로부터 파생된 UI또는 데이터는 오직 트리구조에서
+      //자신의 아래에 있는 컴포넌트에만 영향을 미침
+
+      //트리구조가 props의 폭포라고 생각하면
+      //각 컴포넌트의 state는 임의의 점(arbitrary point)에서 만나지만
+      //동시에 아래로 흐르는 부가적인 수원(water source)라고 할 수 있음
+
+
+
+
+      //모든 컴포넌트는 완전히 독립적
+
+      function App() {
+        return (
+          <div>
+            <MountingClock />
+            <MountingClock />
+            <MountingClock />
+          </div>
+        );
+      }
+
+      ReactDOM.render(
+        <App />,
+        document.getElementById('ex3')
+      );
+      //각 MountingClock은 자신만의 타이머를 설정하고 독립적으로 업데이트
+
+      //eact 앱에서 컴포넌트가 유상태 또는 무상태에 대한 것은
+      //시간이 지남에 따라 변경될 수 있는 구현 세부 사항으로 간주합니다
+      //유상태 컴포넌트 안에 무상태 컴포넌트 사용가능. 반대도 가능
+    </script>
+</body>
+</html>
