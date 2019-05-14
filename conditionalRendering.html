@@ -9,6 +9,7 @@
 <body>
   <div id="ex1"></div>
   <div id="ex2"></div>
+  <div id="ex3"></div>
   <script type="text/jsx">
     //조건부 렌더링
     function UserGreeting() {
@@ -89,7 +90,49 @@
       document.getElementById('ex2')
     );
 
-    //test
+    //논리 연산자 && 으로 if를 인라인으로 표현
+
+    function Mailbox(props){
+      const unreadMessages = props.unreadMessages;
+
+      return(
+        <div>
+          <h1>hello!</h1>
+          {unreadMessages.length > 0 &&
+            <h2>
+              You have {unreadMessages.length} unread mssages
+            </h2>
+          }
+        </div>
+      );
+    }
+
+    const messages = ['a', 'Re: b', 'Re:Re: c'];
+
+    ReactDOM.render(
+      <Mailbox unreadMessages={messages}/>,
+      document.getElementById('ex3')
+    );
+    // true && expression --> expression
+    // false && expression --> false
+    //condition ? true: false 사용해도됨
+    //The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
+    /*
+    render() {
+      const isLoggedIn = this.state.isLoggedIn;
+      return (
+        <div>
+          {isLoggedIn ? (
+            <LogoutButton onClick={this.handleLogoutClick} />
+          ) : (
+            <LoginButton onClick={this.handleLoginClick} />
+          )}
+        </div>
+      );
+    }
+    */
+
+    
     </script>
 </body>
 </html>
