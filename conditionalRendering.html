@@ -132,7 +132,28 @@
     }
     */
 
-    
+    //컴포넌트가 렌더링하는 것 막기
+    //가끔 다른컴포넌트에 의해 렌더링 될 때 컴포넌트 자체를 숨겨야 할 때
+    // null 반환
+
+    function WarningBanner(props){
+      if (!props.isView){
+        return null;
+      }
+
+      return(
+        <div className="warning">
+          Warning
+        </div>
+      );
+    }
+
+    class Page extends React.Component{
+      constructor(props){
+        super(props);
+        this.state = {showWarning: true}
+      }
+    }
     </script>
 </body>
 </html>
