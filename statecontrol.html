@@ -1,0 +1,90 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="ex1"></div>
+  <div id="ex2"></div>
+  <script type="text/jsx">
+    //여러 elememt 가 동일한 변경데이터를 반영해야 할 때가 있다.
+    function BoilingVerdict(props){
+      if(props.celsius >=100){
+        return <p>물 끓어</p>;
+      }
+      return <p>물 안끓어</p>;
+    }
+    class Calculator extends React.Component{
+      constructor(props){
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {temperature:''};
+      }
+
+      handleChange(e){
+        this.setState({temperature: e.target.value});
+      }
+
+      render(){
+        const temperature = this.state.temperature;
+        return(
+          <fieldset>
+            <legend>온도를 입력해주세요</legend>
+            <input type="text" value={temperature} onChange={this.handleChange}/>
+            <BoilingVerdict celsius={parseFloat(temperature)}></BoilingVerdict>
+          </fieldset>
+        );
+      }
+    }
+    ReactDOM.render(
+      <Calculator/>,
+      document.getElementById('ex1')
+    );
+    //ex2 섭씨와 화씨 입력 받고 두 값 동기화
+    const scaleNames = {
+      c: 'Celsius',
+      f: 'Fahrenheit'
+    };
+
+    class TemperatureInput extends React.Component{
+      constructor(props){
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {temperature: ''};
+      }
+
+      handleChange(e){
+        this.setState({temperature: e.target.value});
+      }
+
+      render(){
+        const temperature = this.state.temperature;
+        const scale = this.props.scale;
+        return(
+          <fieldset>
+            <legend>{scaleNames[scale]} 온도를 입력해주세요.</legend>
+            <input type="text" value={temperature} onChange={this.handleChange}/>
+          </fieldset>
+        );
+      }
+    }
+    class CalculatorVersion2 extends React.Component{
+      render(){
+        return(
+          <div>
+            <TemperatureInput scale="c"/>
+            <TemperatureInput scale="f"/>
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(
+      <CalculatorVersion2/>,
+      document.getElementById('ex2')
+    );
+    </script>
+</body>
+</html>
