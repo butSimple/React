@@ -1,0 +1,195 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="ex1"></div>
+  <div id="ex2"></div>
+  <div id="ex3"></div>
+  <div id="ex4"></div>
+  <script type="text/jsx">
+    const numbers =[1,2,3,4,5];
+    const doubled = numbers.map(
+      number => number*2
+    )
+    console.log(doubled);
+    //여러개의 컴포넌트 렌더링 하기
+    const listItems = numbers.map(
+      number => <li>{number}</li>
+    );//코드를 실행하면 리스트의 각 항목에 key를 넣어야한다는 경고가나옴
+    //key는 엘리먼트 리스트를 만들 떄 포함해야 하는 특수한 문자열 속성
+
+    ReactDOM.render(
+     <ul>{listItems}</ul>,
+      document.getElementById('ex1')
+    );
+    function NumberList(props){
+      const numbers = props.numbers;
+      const list = numbers.map(
+      number => <li key={number.toString()}>{number}</li>// 키 추가
+      );
+      return(
+        <ul>{list}</ul>
+      );
+    }
+
+    const arr = [1,2,3,4,5];
+    ReactDOM.render(
+    <NumberList numbers={arr}></NumberList>,
+    document.getElementById('ex2')
+    );
+    //key는 React가 어떤 항목을 변경, 추가 또는 삭제 할지 식별할 때 필요
+    //key는 엘리먼트에 안정적인 고유성을 부여하기 위해
+    //배열 내부의 엘리먼트를 지정해야함(배열 값이 중복이면?)
+    //Key는 고유하게 식별할 수 있는 문자열을 사용하는게 가장 좋음
+    //보통 데이터의 ID를 key로
+    const todoItems = todos.map((todo, index) =>
+      // Only do this if items have no stable IDs 마땅한 값이 없으면
+      //최후로 항목의 인덱스
+      <li key={index}>
+        {todo}
+      </li>
+    );
+    ReactDOM.render(
+    <li><todoItems/></li>,
+    document.getElementById('ex3')
+    )
+    //항목의 순서가 바뀔 수 있는 경우 key에 인덱스를 사용하는 것은
+    //권장하지 않음
+    //이로 인해 성능이 저하되거나 컴포넌트의 state와 관련된 문제가
+    //발생할 수 있음
+    //https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318
+    //인덱스를 사용할 경우 부정적인 영향참고
+
+    //리스트항목에 명시적으로 key를 지정하지 않으면 react는 기본적으로 인덱스를
+    //key로 사용함
+    //https://ko.reactjs.org/docs/reconciliation.html#recursing-on-children
+    // 리스트 항목에 키가 필요한 이유 참고
+
+    //key로 컴포넌트 추출하기
+
+    //키는 주변 배열의 context에서만 의미가 있다?
+    //예로 listItem 컴포넌트를 추출한 경우 Listitem 안에 있는
+    //<li> 엘리먼트가 아니라 배열의 <ListItem/> 엘리먼트가 key를 가져야함
+
+    //잘못된 예시
+    function BadListItem(props) {
+      const value = props.value;
+      return (
+        // 틀렸습니다! 여기에는 key를 지정할 필요가 없습니다.
+        <li key={value.toString()}>
+          {value}
+        </li>
+      );
+    }
+
+    function BadNumberList(props) {
+      const numbers = props.numbers;
+      const listItems = numbers.map((number) =>
+        // 틀렸습니다! 여기에 key를 지정해야 합니다.
+        <ListItem value={number} />
+      );
+      return (
+        <ul>
+          {listItems}
+        </ul>
+      );
+    }
+    //올바른 예시
+    function ListItem(props) {
+      // 맞습니다! 여기에는 key를 지정할 필요가 없습니다.
+      return <li>{props.value}</li>;
+    }
+
+    function NumberList(props) {
+      const numbers = props.numbers;
+      const listItems = numbers.map((number) =>
+        // 맞습니다! 배열 안에 key를 지정해야 합니다.
+        <ListItem key={number.toString()}
+                  value={number} />
+
+      );
+      return (
+        <ul>
+          {listItems}
+        </ul>
+      );
+    }
+    //대체적으로 map() 함수
+    //내부에 있는 엘리먼트에 key를 넣어주는게 좋다
+
+
+    //key는 형제 사이에서만 고유한 값이여야 한다.
+    //배열안에서만 고유해야하며 전체범위까지 고려할 필요없다.
+    //두 개의 다른 배열을 만들 때 동일한 key를 사용할 수 있습니다
+    function Blog(props) {
+      const sidebar = (
+        <ul>
+          {props.posts.map((post) =>
+            <li key={post.id}>
+              {post.title}
+            </li>
+          )}
+        </ul>
+      );
+      const content = props.posts.map((post) =>
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+        </div>
+      );
+      return (
+        <div>
+          {sidebar}
+          <hr />
+          {content}
+        </div>
+      );
+    }
+
+    const posts = [
+      {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+      {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+    ];
+    ReactDOM.render(
+      <Blog posts={posts} />,
+      document.getElementById('ex4')
+    );
+    //react에서 key는 힌트를 제공하지만 컴포넌트로 전달하지 않는다.
+    //컴포넌트에서 key와 동일한 값이 필요하다면 명시적으로 전달해야함
+    //<Post key={post.id} id={post.id} title={post.title} />
+    //위의 예제에서 Post컴포넌트는
+    // props.id를 읽을 수 있지만 props.key는 읽을 수 없다.
+
+    //JSX에 map() 포함시키기
+    function BeforeNumberList(props) {
+      const numbers = props.numbers;
+      const listItems = numbers.map((number) =>
+        <ListItem key={number.toString()}
+                  value={number} />
+      );
+      return (
+        <ul>
+          {listItems}
+        </ul>
+      );
+    }
+    function NumberList(props) {
+      const numbers = props.numbers;
+      return (
+        <ul>
+          {numbers.map((number) =>
+            <ListItem key={number.toString()}
+                      value={number} />
+
+          )}
+        </ul>
+      );
+    }//가독성을 위해 어떤걸로 할지는 개발자 판단
+    </script>
+</body>
+</html>

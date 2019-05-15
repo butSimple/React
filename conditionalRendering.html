@@ -10,6 +10,7 @@
   <div id="ex1"></div>
   <div id="ex2"></div>
   <div id="ex3"></div>
+  <div id="ex4"></div>
   <script type="text/jsx">
     //조건부 렌더링
     function UserGreeting() {
@@ -151,9 +152,36 @@
     class Page extends React.Component{
       constructor(props){
         super(props);
-        this.state = {showWarning: true}
+        this.state = {showWarning: true};
+        this.handleToggleClick =
+        this.handleToggleClick.bind(this);
+      }
+
+      handleToggleClick(){
+        this.setState(state =>({
+          showWarning: !state.showWarning
+        }));
+      }
+      render(){
+        return(
+          <div>
+            <WarningBanner isView={this.state.showWarning}/>
+            <button onClick={this.handleToggleClick}>
+              {this.state.showWarning ? 'Hide' : 'show'}
+            </button>
+          </div>
+        );
       }
     }
+
+    ReactDOM.render(
+      <Page/>,
+      document.getElementById('ex4')
+    );
+    //render 메서드로부터 null을 반환 하는 것은
+    //생명주기 메서드 호출에 영향을 주지 않는다.
+    //그 예로 componentDidUpdate 호출
+
     </script>
 </body>
 </html>
