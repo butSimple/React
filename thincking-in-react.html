@@ -1,0 +1,113 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <!--
+  Start With A Mock
+  1. REST API와 목업으로 시작
+  2. UI를 컴포넌트 계층 구조로 나눔
+    -  모든 컴포넌트에 이름 붙이기
+    -  단일 책임 원칙 https://ko.wikipedia.org/wiki/%EB%8B%A8%EC%9D%BC_%EC%B1%85%EC%9E%84_%EC%9B%90%EC%B9%99
+    - ex 보고서를 편집하고 출력하는 모듈
+         첫 번째로 보고서의 내용 때문에 변경될 수 있다.
+         두 번째로 보고서의 형식 때문에 변경될 수 있다.
+         하나는 실질적이고
+         다른 하나는 꾸미기 위한 매우 다른 원인에 기인
+
+         일 책임 원칙에 의하면 이 문제의 두 측면이
+         실제로 분리된 두 책임 때문이며,
+         따라서 분리된 클래스나 모듈로 나누어야 한다.
+         다른 시기에 다른 이유로 변경되어야 하는
+         두 가지를 묶는 것은 나쁜 설계일 수 있다.
+
+    - 주로 JSON 데이터를 유저에게 보여주기 때문에,
+    - 데이터 모델이 적절하게 만들어졌다면
+    - UI와 잘 연결될 것이다.
+    - UI와 데이터 모델이 같은
+    - 인포메이션 아키텍처(information architecture)로 잘 연결되기 때문
+    - 포넌트가 데이터 모델의 한 조각을 나타내도록 분리
+ -->
+  <div id="ex1"></div>
+  <script type="text/jsx">
+    const data = [
+     {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+     {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+     {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+     {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+     {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+     {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+   ];
+    //1. 디자인과 ,data를 보고 컴포넌트 나누기
+    //FilterableProductTable 전체를 포괄
+    //SearchBar 모든 유저의 입력을 받는다.
+    //ProductTable 유저의 입력을 기반으로 데이터 필터
+    //ProductCategoryRow 카테고리의 헤더를 보여준다
+    //ProductRow 제품(product)에 해당하는 행을 보여줌
+
+    //2. 해당 컴포넌트들의 계층 구조 나열
+    //FilterableProductTable
+    //  SearchBar
+    //  ProductTable
+    //    ProductCategoryRow
+    //    ProductRow
+
+    //3. React로 정적인 버전 만들기 (state 사용하지말고 prop으로)
+    // 상향식 하향식 원하는 방식으로 (상향식은 큰 규모에서 테스트하면서 개발할 수 있다,)
+    //완성되면  데이터 흐름이 보임
+    //React의 단방향 데이터 흐름(one-way data flow) (또는 단방향 바인딩(one-way binding))
+    //는 모든 것을 모듈화 하고 빠르게 만들어줍니다.
+    class ProductTable extends React.Component{
+      constructor(props){
+        super(props);
+      }
+      render(){
+        let element =<tr><th colSpan="2">{this.props.data[0].category}</th></tr>;
+        return(
+          element
+        );
+      }
+    }
+    class ProductCategoryRow extends React.Component{
+      constructor(props){
+        super(props);
+      }
+      render(){
+        return(
+        <tr>
+          <td colSpan="2">{this.props.category}</td>
+        </tr>
+        );
+      }
+    }
+    function ProductRow(props){
+      return(
+      <tr>
+        <td>{this.props.name}</td><td>{this.props.price}</td>
+      </tr>
+      );
+    }
+    /*
+    class ProductRow extends React.Component{
+      constructor(props){
+        super(props);
+      }
+      render(){
+        return(
+        <tr>
+          <td>{this.props.name}</td><td>{this.props.price}</td>
+        </tr>
+        );
+      }
+    }*/
+    ReactDOM.render(
+      <table><tbody><ProductTable data ={data}/></tbody></table>,
+      document.getElementById('ex1')
+    );
+    </script>
+</body>
+</html>

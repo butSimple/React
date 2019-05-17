@@ -1,0 +1,32 @@
+<html lang="UTF-8">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://fb.me/react-0.14.0.js"> </script>
+	<script src="https://fb.me/react-dom-0.14.0.js"> </script>
+	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="ex1"></div>
+  <script type="text/jsx">
+    //상속은?
+    // 페이스북에서도 수천 개의 React를 사용하지만
+    //아직 컴포넌트를 상속 계층 구조로 작성을 권장할만한
+    //사례를 찾지 못함
+
+    //props와 합성은 명시적이고 안전한 방법
+    //컴포넌트의 모양과 동작을 커스터마이징하는데
+    // 필요한 모든 유연성을 제공
+    //포넌트가 원시 타입의 값,
+    // React 엘리먼트 혹은 함수 등 어떠한 props도 받을 수 있다
+    //UI가 아닌 기능을 여러 컴포넌트에서 재사용하기를 원한다면
+    //별도의 JavaScript 모듈로 분리
+    //컴포넌트에서 해당 함수, 객체, 클래스 등을
+    //import 하여 사용할 수 있습니다. 상속받을 필요 없다
+    ReactDOM.render(
+      <h1>Hello, world!</h1>,
+      document.getElementById('ex1')
+    );
+    </script>
+</body>
+</html>
