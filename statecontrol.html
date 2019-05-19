@@ -85,8 +85,97 @@
       <CalculatorVersion2/>,
       document.getElementById('ex2')
     );
+    function toCelsius(fahrenheit) {
+      return (fahrenheit - 32) * 5 / 9;
+    }
 
-    //테스트 커밋
-    </script>
+    function toFahrenheit(celsius) {
+      return (celsius * 9 / 5) + 32;
+    }
+    function tryConvert(temperature,convert){
+      const input = parseFloat(temperature);
+      if (Number.isNaN(input)) {
+        return '';
+      }
+      const output = convert(input);
+      const rounded = Math.round(output * 1000) / 1000;
+      return rounded.toString();
+    }
+    //React는 두 컴포넌트간의 데이터 공유가 필요할 떈 가장 가까운
+    //부모 컴포넌트의 state를 이용한다. 이것을 lifting state up이라고 부른다.
+    // 만약 부모컴포넌트가 소유한 state를 공유한다면
+    //여러 자식 컴포넌트는  source of truth (한곳에서 데이터가 흐른다.)가 된다.
+    //이렇게 되면 부모컴포넌트는 자식컴포넌트들이 서로 일관된 값을 가지게 할 수 있다.
+
+    //TemperatureInput 컴포넌트들는 Calculator 컴포넌트라는 동일한 부모를 가진다.
+    //그러므로 두 컴포넌트들은 항상 동기화 될 수 있다.
+    class AfterTemperatureInput extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+      }
+
+      handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);//setState에서 부모로 부터
+                                                       //function을 받아온다.
+      }
+
+      render() {
+        const temperature = this.props.temperature;// State에서 Prop으로 변경해
+                                                   // 내부에선 불변하며
+                                                   //lifting state up 상태
+        const scale = this.props.scale;
+        return (
+          <fieldset>
+            <legend>Enter temperature in {scaleNames[scale]}:</legend>
+            <input value={temperature}
+                   onChange={this.handleChange} />
+          </fieldset>
+        );
+      }
+    }
+
+    class AfterCalculator extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+        this.state = {temperature: '', scale: 'c'};
+      }
+
+      handleCelsiusChange(temperature) {
+        this.setState({scale: 'c', temperature});
+      }
+
+      handleFahrenheitChange(temperature) {
+        this.setState({scale: 'f', temperature});
+      }
+
+      render() {
+        const scale = this.state.scale;
+        const temperature = this.state.temperature;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+        return (
+          <div>
+            <TemperatureInput
+              scale="c"
+              temperature={celsius}
+              onTemperatureChange={this.handleCelsiusChange} />
+
+            <TemperatureInput
+              scale="f"
+              temperature={fahrenheit}
+              onTemperatureChange={this.handleFahrenheitChange} />
+
+            <BoilingVerdict
+              celsius={parseFloat(celsius)} />
+
+          </div>
+        );
+      }
+    }
+   </script>
 </body>
 </html>
