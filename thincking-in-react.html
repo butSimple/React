@@ -61,14 +61,66 @@
     //완성되면  데이터 흐름이 보임
     //React의 단방향 데이터 흐름(one-way data flow) (또는 단방향 바인딩(one-way binding))
     //는 모든 것을 모듈화 하고 빠르게 만들어줍니다.
+    class FilterableProductTable extends React.Component{
+      constructor(props){
+        super(props);
+      }
+
+      render(){
+        return(
+          <div>
+            <SearchBar/>
+            <ProductTable data={data}/>
+          </div>
+        );
+      }
+    }
+    class SearchBar extends React.Component{
+      constructor(props){
+        super(props);
+      }
+
+      render(){
+        return(
+          <form>
+            <input type="text" placeholder="Search" /><br/>
+            <label><input type="checkBox"/>Only show products in stock</label>
+          </form>
+        );
+      }
+    }
     class ProductTable extends React.Component{
       constructor(props){
         super(props);
       }
       render(){
-        let element =<tr><th colSpan="2">{this.props.data[0].category}</th></tr>;
+        const data = this.props.data;
+        let lastCategory =null;
+        const elements=[];
+        data.forEach((product)=>{
+          if(product.category !== lastCategory){
+            elements.push(
+              <ProductCategoryRow category ={product.category}
+              key = {product.category}/>
+            );
+          }
+          elements.push(
+            <ProductRow name={product.name} price={product.price}
+             stocked={product.stocked}  key={product.name}/>
+          );
+          lastCategory = product.category;
+        });
+
         return(
-          element
+          <table>
+          <thead>
+            <tr>
+              <th>Nmae</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>{elements}</tbody>
+          </table>
         );
       }
     }
@@ -79,20 +131,23 @@
       render(){
         return(
         <tr>
-          <td colSpan="2">{this.props.category}</td>
+          <th colSpan="2">{this.props.category}</th>
         </tr>
         );
       }
     }
     function ProductRow(props){
+      const style = props.stocked ? {color:'black'}: {color:'red'};
       return(
-      <tr>
-        <td>{this.props.name}</td><td>{this.props.price}</td>
-      </tr>
+
+          <tr>
+            <td style={style}>{props.name}</td><td>{props.price}</td>
+          </tr>
+
       );
     }
-    /*
-    class ProductRow extends React.Component{
+
+    /*class ProductRow extends React.Component{
       constructor(props){
         super(props);
       }
@@ -105,7 +160,7 @@
       }
     }*/
     ReactDOM.render(
-      <table><tbody><ProductTable data ={data}/></tbody></table>,
+    <FilterableProductTable/>,
       document.getElementById('ex1')
     );
     </script>
