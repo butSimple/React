@@ -8,17 +8,13 @@
   -->
   <script src="https://unpkg.com/react@16.8.6/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js" crossorigin></script>
-	<script src="https://fb.me/JSXTransformer-0.13.3.js"> </script>
+	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <title>Document</title>
 </head>
 <body>
   <div id="ex1"></div>
   <div id="ex2"></div>
-  <script>
-      import React, { Component, useContext } from 'react';
-  </script>
-  <script type="text/jsx">
-
+  <script type="text/babel">
     //Context
     //Context를 사용하면 props으로 일일이 넘겨주지 않아도 트리 전체에서
     //데이터 사용 가능
@@ -33,9 +29,9 @@
 
     function Toolbar(props) {
       // Toolbar 컴포넌트는 불필요한 테마 prop를 받아서
-      // ThemeButton에 전달해야 합니다.
+      // ThemeButton에 전달해야 한다.
       // 앱 안의 모든 버튼이 테마를 알아야 한다면
-      // 이 정보를 일일이 넘기는 과정은 매우 곤혹스러울 수 있습니다.
+      // 이 정보를 일일이 넘기는 과정은 매우 힘들다
       return (
         <div>
           <ThemedButton theme={props.theme} />
@@ -58,16 +54,16 @@
     //넘겨주지 않아도 됨
 
     // context를 사용하면 모든 컴포넌트를 일일이 통하지 않고도
-    // 원하는 값을 컴포넌트 트리 깊숙한 곳까지 보낼 수 있습니다.
-    // light를 기본값으로 하는 테마 context를 만들어 봅시다.
+    // 원하는 값을 컴포넌트 트리 깊숙한 곳까지 보낼 수 있다.
+    // light를 기본값으로 하는 테마 context를 만들자
 
     const ThemeContext = React.createContext('light');
     class ThemeApp extends React.Component{
 
       render(){
         // Provider를 이용해 하위 트리에 테마 값을 보내줍니다.
-       // 아무리 깊숙히 있어도, 모든 컴포넌트가 이 값을 읽을 수 있습니다.
-       // 아래 예시에서는 dark를 현재 선택된 테마 값으로 보내고 있습니다.
+       // 아무리 깊숙히 있어도, 모든 컴포넌트가 이 값을 읽을 수 있다.
+       // 아래 예시에서는 dark를 현재 선택된 테마 값으로 보낸다
 
        return(
          <ThemeContext.Provider value ="dark">
@@ -76,7 +72,7 @@
        );
       }
     }
-    // 이젠 중간에 있는 컴포넌트가 일일이 테마를 넘겨줄 필요가 없습니다.
+    // 이젠 중간에 있는 컴포넌트가 일일이 테마를 넘겨줄 필요가 없음
     function ThemeToolbar(props) {
       return (
         <div>
@@ -88,16 +84,148 @@
       // 현재 선택된 테마 값을 읽기 위해 contextType을 지정합니다.
       // React는 가장 가까이 있는 테마 Provider를 찾아 그 값을 사용할 것입니다.
       // 이 예시에서 현재 선택된 테마는 dark입니다.
-      //static contextType = ThemeContext;
+      static contextType = ThemeContext;
       render() {
-        return <button value={this.context} />;
+        return <input type="button" value={this.context} />;
       }
     }
     ReactDOM.render(
       <ThemeApp/>,
       document.getElementById('ex2')
     );
+    //context를 사용하기 전에 고려할 것
+    //1. context를 사용하면 컴포넌트 재사용이 어려워 진다.
+    //2. 여러 레벨을 결처 props 넘기는걸 대체하는건 context보다
+    //컴포넌트 합성이 더 간단할 수 있다.
 
+    /*
+      ex
+
+      <Page user={user} avatarSize={avatarSize} />
+      // ... 그 아래에 ...
+      <PageLayout user={user} avatarSize={avatarSize} />
+      // ... 그 아래에 ...
+      <NavigationBar user={user} avatarSize={avatarSize} />
+      // ... 그 아래에 ...
+      <Link href={user.permalink}>
+        <Avatar user={user} size={avatarSize} />
+      </Link>
+
+      이럴 떄 avatar 컴포넌트 자체를 넘겨준다면 context 사용 불필요
+
+
+      function Page(props) {
+      const user = props.user;
+      const userLink = (
+        <Link href={user.permalink}>
+          <Avatar user={user} size={props.avatarSize} />
+        </Link>
+      );
+      return <PageLayout userLink={userLink} />;
+    }
+
+    // 이제 이렇게 쓸 수 있습니다.
+    <Page user={user} avatarSize={avatarSize} />
+    // ... 그 아래에 ...
+    <PageLayout userLink={...} />
+    // ... 그 아래에 ...
+    <NavigationBar userLink={...} />
+    // ... 그 아래에 ...
+    {props.userLink}
+
+
+    이러한 제어의 역전(inversion of control) 을 이용하면 넘겨줘야하는
+    props의 수는 준다.
+    물론 이방법이 매번 옳진 않다.
+    */
+
+    function Page(props) {
+        const user = props.user;
+        const content = <Feed user={user} />;
+        const topBar = (
+          <NavigationBar>
+            <Link href={user.permalink}>
+              <Avatar user={user} size={props.avatarSize} />
+            </Link>
+          </NavigationBar>
+        );
+        return (
+          <PageLayout
+            topBar={topBar}
+            content={content}
+          />
+        );
+      }
+      //슬롯으로 분리해서 보낼 수 도 있다.
+
+      //같은 데이터를 트리안의 여러 레벨에 컴포넌트에 주어야할 떈 context가 편리하다
+      //테마, 데이터 캐시 등
+
+     const MyContext = React.createContext(defaultValue);
+      //context 객체를 만든다.
+      //context 객체를 이용하는 컴포넌트를 랜더링할 떄
+      //React는 트리 상위에서 가장 가까이 있는 이름이 맞는 Provider로 부터 값을 가져온다.
+      //defaultValue 는 트리안에서 적절한 Provider를 찾지 못하면 사용
+      //Provider를 통해 undefined 보내면 defaultVlaue 사용 못함
+
+      <MyContext.Provider value={/* 어떤 값 */}>
+      //Context 객체에 포함된 Provider 컴포넌트는 context를 사용하는 컴포넌트들에게
+      //context의 변화를 알림
+      //provider 하위에 또 provider 사용 가능
+      //이 경우에는 하위 rpovider 값이 우선시 됨
+
+      //provider 하위에서 context를 참조하는 모든 컴포넌트는
+      //provider의 value prop가 바뀔 떄 마다 다시 렌더링 됨
+      //이러한 흐름은 shouldComponentUpdate(뭘까?)의 영향을 받지
+      //않기 떄문에 중간에 있는 컴포넌트가 업데이트를 중지해도
+      //트리 끝까지 전달
+
+      class MyClass extends React.Component {
+        componentDidMount() {
+          let value = this.context;
+          /* MyContext의 값을 이용한 코드 */
+        }
+        componentDidUpdate() {
+          let value = this.context;
+          /* ... */
+        }
+        componentWillUnmount() {
+          let value = this.context;
+          /* ... */
+        }
+        render() {
+          let value = this.context;
+          /* ... */
+        }
+      }
+      MyClass.contextType = MyContext;
+      //클래스의 contextType으로도 지정가능
+      //render를 포함한 모든 컴포넌트 생명주기 매서드에서 사용 가능
+      //이 방식은 하나의 context만 사용가능
+
+      class MyClass extends React.Component {
+        static contextType = MyContext;
+        render() {
+          let value = this.context;
+          /* context 값을 이용한 렌더링 */
+        }
+      }
+      // 위처럼 스태틱한 클래스 프로퍼티로도 가능
+      //https://babeljs.io/docs/en/babel-plugin-proposal-class-properties
+
+      //Context.Consumer
+      <MyContext.Consumer>
+        {value => /* context 값을 이용한 렌더링 */}
+      </MyContext.Consumer>
+      <MyContext.Consumer>
+        {value => (
+          <p>This is {value}</p>
+        )}
+      </MyContext.Consumer>
+      //context 변화를 감지하는 React 컴포넌트
+      //함수 컴포넌트안에서 context를 읽기 위해 사용
+      //자식은 함수여야 한다.
+      //함수는 context를 받고 엘리먼트를 반환해야 한다.
     </script>
 </body>
 </html>
