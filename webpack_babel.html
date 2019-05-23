@@ -27,6 +27,7 @@ WebPack, Babel 시작하기
 우리는 ES6 문법 및 JSX를 이용하여 React를 구현했다. 한번 쯤 (크롬)브라우저의 개발자 도구를
 
 열어봤다면
+<pre>
 You are using the in-browser JSX transformer. Be sure to precompile your JSX for production
 (by JSXTransformer.js)
 You are using the in-browser Babel transformer. Be sure to precompile
@@ -225,7 +226,7 @@ WebPack이란  여러 의존적인 파일(다수의 js파일, 다수의 js파일
        rules:[
           {
              test:/\.(js)$/, // 모든 .js파일에 babel-loader(.babelrc에 설정한 파일)을 적용합니다.
-             exclude: /node_modules/,
+             exclude: /node_modules/, // node_moudules 폴더 하위는 제외 한다.
              use:{
                 loader:"babel-loader" // babel-loader를 사용한다.
              }
@@ -233,3 +234,176 @@ WebPack이란  여러 의존적인 파일(다수의 js파일, 다수의 js파일
        ]
       }
     };
+</pre>
+
+11 - 1. es6 문법을 es5문법으로 컴파일 및 패키징 하기
+		위 방법까지 잘 따라왔다면 우리는 이제 babel과 webpack의 기본적인 기능들을
+		사용할 수 있다.
+		하나는 웹팩을 이용하여 의존성있는 여러 JS파일들을 하나의 파일로 합치고
+		다른 하나는 babel을 이용하여 es6등 차세대 자바스크립트 문법을 es5 es5문법으로
+		컴파일하는 것이다.
+
+		이제 실습해보자.
+
+11 - 2. es6.js 파일 만들기
+
+우리는 es6의 arrow function과 export 를 사용하여 es6.js 파일을 만들고
+기존에 있던 index.js파일에 import 할 것이다.
+
+es6.js 파일 내용은 다음과 같다.
+
+		export const print = ()=>{console.log('안녕')};
+
+index.js 파일 내용은 다음과 같다.
+
+	import {print} from './es6.js';
+
+11 - 3. package.json 수정
+	 package.json 파일도 다음과 같은 내용을 추가할 것이다.
+	...
+	"scripts": {
+  	"dev": "webpack --mode development", // 패키징 할 때 개발모드로
+  	"build": "webpack --mode production" // 패키징 할 떄 배포모드로
+	}
+	...
+	우리는 지금 까지 npx webpack을 사용했다
+	이것을 mode 옵션없이 사용하면 npx webpack --mode production 으로 mode의
+	기본값은 production 이다.
+	이렇게 패키징을 하면 난독화를 하여 한줄로 패키징된다.
+	따라서 우리는 개발모드으로 패키징하기 위해 npx webpack --mode development
+  사용할 것이고 이것을 매번 입력하기 번거로운 것이 있어 script를 등록한 것이
+	위의 내용이다.
+
+	앞으로 우리는 npx webpack --mode development 대신에
+	npm run dev 를 사용할 것이다.
+	npm run 은 스크립트를 사용하는 것이다. dev라는 스크립트를
+	사용하여 개발모드로 패키징한다.
+
+	- 물론 옵션 대신에 webpack.confing.js에 설정 할 수도 있다.
+
+	아래는 package.json 전문이다.
+
+	{
+	  "name": "react_webpack_Version1.01",
+	  "version": "1.0.0",
+	  "description": "",
+	  "main": "index.js",
+	  "scripts": {
+	    "test": "echo \"Error: no test specified\" && exit 1",
+	    "dev": "webpack --mode development",
+	    "build": "webpack --mode production"
+	  },
+	  "keywords": [],
+	  "author": "",
+	  "license": "ISC",
+	  "devDependencies": {
+	    "@babel/core": "^7.4.5",
+	    "@babel/preset-env": "^7.4.5",
+	    "babel-loader": "^8.0.6",
+	    "webpack": "^4.32.0",
+	    "webpack-cli": "^3.3.2"
+	  }
+	}
+
+11 - 4.실행
+   우리는 위의 과정에서 webpack과 babel 설치 및 설정을 끝냈다.
+	 이제 es6.js, index.js 파일을 es5 문법으로 컴파일 및 패키징을 할 것이다.
+	 아래의 명령어로 실행하면
+	 - 명령어 npm run dev
+	 두 파일이 main.js로 잘 합쳐졌다.
+
+12. React install
+	 마지막으로 우리는 React의 문법들을 컴파일 할 것이다.
+	 우선 React 관련 패키지를 설치해야한다.
+	 - 명령어 npm install --save-dev react react-dom @babel/preset-react
+	 - react React를 사용하기 위한 필수 라이브러리
+	 - react-dom ReactDOM을 사용하기 위한 필수 라이브러리
+	 - @babel/preset-react babel에서 React를 컴파일하기 위한 라이브러리
+
+13. .babelrc 및 webpack.config.js 수정
+		이제 babel에서도 React(JSX) 문법도 컴파일 해야하기 떄문에
+		React presets을 등록해야한다.
+
+		.babelrc 파일을 아래와 같이 수정한다.
+		{
+		  "presets": [
+		     "@babel/preset-env" //ES6 등의 문법을 ES5로 변환하겠다.
+				 , "@babel/preset-react" //React(JSX) 문법 컴파일
+		  ]
+		}
+
+		다음은 webpack.config.js 수정해야한다.
+		우리는 보통 React 코드 파일을 만들 때 .js, .jsx 파일로 만든다.
+		그래서 패키징 할 때 .jsx 파일도 패키징 되도록 수정해야한다.
+		아래 코드처럼 test 부분을 /\.(js)$/ --> /\.(js|jsx)$/ 변경한다.
+		const path = require('path');
+
+    module.exports = {
+      entry: './src/index.js',
+      output: {
+        filename: 'main.js',
+        path: path.resolve(__dirname, 'dist')
+      },
+      module:{
+       rules:[
+          {
+             test:/\.(js|jsx)$/, // 모든 .js,jsx파일에 babel-loader(.babelrc에 설정한 파일)을 적용합니다.
+             exclude: /node_modules/, // node_moudules 폴더 하위는 제외 한다.
+             use:{
+                loader:"babel-loader" // babel-loader를 사용한다.
+             }
+          }
+       ]
+      }
+    };
+
+	14. react-app.jsx 파일 만들기
+
+	import React from 'react';
+
+	export const HelloReact = ()=>{
+		return (
+			<h3>HelloReact</h3>
+		);
+	}
+
+	위와 같은 내용의 파일을 만든다.
+
+15. index.js 파일 수정
+
+	import {HelloReact} from './react-app.jsx';
+	import React from 'react';
+	import ReactDOM from 'react-dom';
+
+	ReactDOM.render(<HelloReact />, document.getElementById('ex1'));
+
+	다음과 같이 수정한다.
+
+16.컴파일 및 패키징 하기
+	- 명령어 npm run dev
+
+	여기까지 잘되었다면 이제 우리 브라우져의 도움을 받지 않고도
+	React 문법을 사용할 수 있다.
+
+17. main.js 사용하기
+  main.js 사용할 html 파일을 만든다.
+	내용은 다음과 같다.
+
+	<html lang="UTF-8">
+		<head>
+		  <meta charset="UTF-8">
+		  <title>Document</title>
+		</head>
+		<body>
+		  <div id="ex1"></div>
+		  <script src="main.js"> </script> //위치에 주의하기
+		</body>
+	</html>
+
+	보통 외부스크립트를 사용할 때 우리는 head 밑에 스크립트를 포함시킨다.
+	하지만 지금은  head 밑에 포함시킬경우 DOM element를 찾을 수 없다는 오류가 나온다.
+	DOM이 만들어지기도 전에 js가 실행되 나오는 오류이니 위와 같이
+	div 밑에 스크립트를 포함하거나 html이 로드된 후에 React가 실행되도록 바꿔야한다.
+
+	이제 브라우져에서 실행해보면 HelloReact가 보일것이다.
+	
