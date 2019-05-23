@@ -1,0 +1,235 @@
+<!--웹팩이란?
+JavaScript와 대규모 의존성 트리를 가지고 있는 다양한 기능을 갖춘 어플리케이션에서
+복잡성에 대응하기 위해 고안
+
+한 프로그램으로 작동하는 하나의 파일을 여러 파일로 분할하고 구성하는  자바스크립트 모듈
+향후 자바스크립트에서 제공될 기능을 미리 이용할 수 있게 해주는 자바스크립트 전처리기(pre-processor)와
+자바스크립트로 컴파일되는 언어
+
+파일을 브라우저가 이해할 수 있도록 번들로 묶고 변환(트랜스파일 및 컴파일)하는
+이전에는 없던 추가 단계를 거쳐야 이용이 가능
+웹팩은 웹에서 사용되는 모든 자원(assets)을 번들링 해주는 도구입니다.
+ 번들링의 개념은 여러개의 파일 중에 종속성이 존재하는 파일을 하나의
+ 파일로 묶어 패키징을 시키는 과정을 의미합니다.
+
+ 1번 파일에서 2번 파일에 있는 함수를 호출해야 할 경우 스크립트를 불러오는 순서를 2번 파일을 제일 상단에 올려놓고 1번 파일을 그 다음에 불러와지도록 선언을 했는데 이제는 모듈이라는 개념을 사용해 1번 파일에서 2번 파일을 불러오기만 하면됩니다.
+
+번들링을 함으로써 파일은 하나로 합쳐지고 네트워킹 요청횟수는 줄어들게 됩니다. 그리고 중복된 소스코드도 최소화하고 모듈 개념을 사용하기 때문에 글로벌이 오염되지도 않습니다.
+
+그리고 웹팩을 사용하면 자바스크립트 간의 종속성 뿐만 아니라 자바스크립트 내에서 필요한 css나 img와 같은 파일(.css, .jpg)도 번들링해서 하나의 파일로 합쳐줘서 네트워크 요청을 최소화 시킬 수 있습니다.
+
+  웹팩은 프로젝트의 구조를 분석하고 자바스크립트 모듈을 비롯한 관련 리소스들을 찾은 다음 이를 브라우저에서 이용할 수 있는 번들로 묶고 패킹하는 모듈 번들러(Module bundler)다.
+
+  웹팩은 프로젝트 전체를 한 단위로 분석한다. 즉, 지정한 메인 파일에서 시작해 자바스크립트의 require(webpack commonJS 모듈 지원)과 import(ES6)문을 참고해 프로젝트의 모든 의존성을 조사하고 로더를 이용해 처리한 후 번들로 묶은 자바스크립트 파일을 생성한다.
+  웹팩의 방식이 더 빠르고 직관적이다. 또한 웹팩은 js이외 다른 파일 형식까지 번들로 묶을 수 있는 방법을 제공한다.
+-->
+WebPack, Babel 시작하기
+우리는 ES6 문법 및 JSX를 이용하여 React를 구현했다. 한번 쯤 (크롬)브라우저의 개발자 도구를
+
+열어봤다면
+You are using the in-browser JSX transformer. Be sure to precompile your JSX for production
+(by JSXTransformer.js)
+You are using the in-browser Babel transformer. Be sure to precompile
+(by babel.js)
+이러한 문구를 보았을 것이다.
+
+우리는 지금까지 브라우저에 의존하여 JSX 문법,ES6 문법 들을 변환하여 사용했다.
+
+이제는 브라우저에 의존하지 않고 먼저 선행적 문법들은 es5 문법으로 컴파일할 것이다.
+그것을 도와주는 것이 babel이다.
+이러면 이제 브라우저에 의존하지않고 낮은 버전의 브라우저에서도 React를 사용 할 수 있다.
+
+또한 우리는 babel과 같이 WebPack을 사용한다.
+
+WebPack이란  여러 의존적인 파일(다수의 js파일, 다수의 js파일과 css파일 img 파일 html 파일 등)을
+하나의 패키지로 묶어준다.
+이렇게 되면 의존적은 파일들이 묶여 하나의 파일로 배포 할 수 있어
+네트워크 트래픽, 의존적 문제 등이 해결 된다.
+이말고도 다양한 이점들이 있다.
+
+우리는 지금까지 많은 class 들을 한 *.js(jsx) 파일에 넣어서 작업했다.
+
+하지만 지금부터는 각 컴포넌트를 하나의 파일로 관리해 필요한 부분에만 import하여 사용하여
+모듈화, 보일러플레이트를 최대한 생각하며 코딩할 것이다.
+
+- 최소한의 변경으로 재사용할 수 있는 것
+- 적은 수정만으로 여러 곳에 활용 가능한 코드, 문구
+- 각종 문서에서 반복적으로 인용되는 문서의 한 부분
+
+이제 설치해보자 (윈도우 기준)
+
+1. node.js 설치
+	- WebPack, Babel은 node.js 패키지 임으로 node.js 설치하기 LTS 나 최신버전
+
+2. 프로젝트 폴더 만들기
+	-  폴더이름 webpack 피하기
+
+3. 윈도우 cmd 창을 실행하고 프로젝트 경로로 이동
+	- node.js 실행창이 아니라 윈도우 cmd 창
+	- 명령어 cd 프로젝트경로
+
+3 - 2. package.json 파일 만들기
+	- 명령어  npm init -y
+	- npm(Node Package Manager) init -y (package.json을 -yes(기본값)으로 설치한다)
+	- package.json이란 패키지를 global(전역)으로 설치할 떄가 아닌 프로젝트에 설치 적용할 때
+	  패키지들의 프로젝트의 의존관계를 정의한다.
+
+	- 주의 사항 . 디폴트 값으로 package.json을 만들면 name 부분에 폴더명이 들어간다.
+	만약 폴더명을 webpack으로 만들었다면 name 부분에 아래처럼 webpack으로 들어간다.
+  {
+    "name": "webpack",
+  ....
+    "devDependencies": {
+      "lodash": "^4.17.11",
+      "webpack": "^4.32.0",
+      "webpack-cli": "^3.3.2"
+    }
+  }
+  name이 webpack 인 경우 webpack 패키지를 설치할 때 충돌이나서 webpack이 설치되지 않는다.
+
+4. 패키지 설치하기
+  - 명령어 rpm i(install) --grobal(or save)-dev(개발자용)
+
+  - rpm install -g 를 사용하여 패키지를 인스톨할 경우 전역적으로 사용할 수 있다.
+    하지만 나는 프로젝트마다 다른 패키지 및 설정을 사용하기 위해 --save 명령어를 사용하여
+    프로젝트에 의존적인 패키지를 설치했다.
+
+  - 명령어 npm i --save-dev webpack webpack-cli
+
+  - webpack: 웹팩을 사용하기 위한 필수 라이브러리
+  - webpack-cli: 웹팩 커맨드라인 인터페이스 라이브러리
+
+  이 두개를 설치하면 우리는 js 패키징을 할 수 있다.
+
+  재대로 설치 되었다면
+
+  package.json 파일에
+  ...
+   "devDependencies": {
+      "webpack": "^4.32.0",
+      "webpack-cli": "^3.3.2"
+    }
+
+  다음과 같이 "devDependencies":  항목이 추가된 것을 볼 수 있다.
+  - 주의사항( package.json 파일을 만들기 전에 패키지를 install하면 dependency가 추가되지 않을 수 있다)
+
+5. index.js 파일 만들기
+
+  프로젝트폴더(이하 webpack_project) 하위로 src라는 폴더를 만들고
+  그 안에 index.js 파일을 만든다
+  (webpack_project/src/index.js)
+
+  - 내용은 아직 없어도 된다.
+
+6. npx webpack 명령어 실행
+  - cmd창에 npx webpack을 입력하면 webpack_project안에 dist 폴더가 생기고
+    그안에 main.js가 생기는걸 볼 수 있다.
+    만약 index.js  안에 여러 js파일이 import 되어 있다면 그파일이 같이 합쳐저 하나의 main.js가 된다.
+
+  - npx는 execute npm package binaries로 로컬 Dependencies가 생기면서 실행하기 불편한 점 등을 보완하기
+    하기 위해 나왔다.
+
+  - 여기서 에러나는 경우 중 하나는 webpack이 version 4미만 일 수 있다.
+    webpack 4 이상부터는 기본적인 Configuration은 요구하지 않지만 4미만은 기본적인 Configuration도 요구한다.
+
+6 - 1. webpack.config.js 파일 만들기
+  - Configuration 요소로는 시작할 파일, 출력될 파일 이름,경로 등이 있다.
+    이 모든 설정은 프로젝트마다 다르게 적용할 수 있다.
+    cmd 명령어로 수동으로 입력해도 되지만 훨씬 효율적이며 관리하기 쉬운
+    webpack.config.js 를 만들것이다.
+
+  기본적인 구성은 다음과 같다.
+  ----
+
+  const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js', //프로젝트 기준 시작 엔트리
+    output: {
+      filename: 'main.js', //출력할 파일 이름
+      path: path.resolve(__dirname, 'dist')//출력할 경로
+    }
+  };
+
+  -------
+
+  프로젝트폴더에 webpack.config.js 파일을 만들고 위의 내용을 넣으면 된다.
+
+7. npx webpack 다시 실행
+  - 명령어 npx webpack --config webpack.config.js
+
+  - 파일이름을 webpack.config.js  로 만들었다면 다음과 같이 명령어를 생략할 수 있다.
+    명령어 npx webpack
+
+  실행하면 잘 되는 것을 볼 수 있다.
+
+8. Babel 패키지 설치
+ - 명령어 npm install --save-dev @babel/core babel-loader @babel/preset-env
+ - @babel/core 바벨을 사용하기 위한 필수 라이브러리
+ - babel-loader 웹팩과 함께 babel을 사용하기 위한 라이브러리
+ - @babel/preset-env  최신 자바스크립트(ES6 등) 기능을 ES5 로 컴파일하기 위한 라이브러리
+
+  재대로 설치가 되었다면 package.json가 변경된 것을 볼 수 있다.
+  ...
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.32.0",
+    "webpack-cli": "^3.3.2"
+  }
+
+9. 바벨 설정 파일 만들기
+ - 바벨을 사용할 때 preset, plugin 등을 설정할 때 사용하는 파일
+ - 윈도우 GUI에서는 파일명이 없는 파일을 만들 수 없기 떄문에
+ - CMD 창에 아래의 명령어를 입력한다.
+ - 명령어 type nul >> .babelrc
+
+  위의 작업을 했다면 프로젝트 폴더에 '.babelrc' 이라는 파일이 생겼을 것이다.
+  아래와 같이 내용을 입력하고 저장한다.
+  {
+    "presets": [
+      "@babel/preset-env" //ES6 등의 문법을 ES5로 변환하겠다.
+    ]
+  }
+
+  이 상태로 바벨만 실행해서 ES6 코드를 ES5 코드로 바꿀 수 있다.
+  하지만 우리는 webpack 과 babel을 같이 사용해야되기 떄문에
+  아래의 작업을 더 해야한다.
+
+10. webpack.config.js 수정하기
+ 현재  webpack.config.js 파일의 내용은 다음과 같다.
+
+  const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js', //프로젝트 기준 시작 엔트리
+    output: {
+      filename: 'main.js', //출력할 파일 이름
+      path: path.resolve(__dirname, 'dist')//출력할 경로
+    }
+  };
+
+  여기에 우리는 module 부분을 추가 할 것이다.
+  코드는 다음과 같다.
+
+    const path = require('path');
+
+    module.exports = {
+      entry: './src/index.js',
+      output: {
+        filename: 'main.js',
+        path: path.resolve(__dirname, 'dist')
+      },
+      module:{
+       rules:[
+          {
+             test:/\.(js)$/, // 모든 .js파일에 babel-loader(.babelrc에 설정한 파일)을 적용합니다.
+             exclude: /node_modules/,
+             use:{
+                loader:"babel-loader" // babel-loader를 사용한다.
+             }
+          }
+       ]
+      }
+    };
